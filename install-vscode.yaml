@@ -1,0 +1,34 @@
+- name: install vscode
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Install apt-transport-https
+      ansible.builtin.apt:
+        name: "apt-transport-https"
+        state: latest
+        update_cache: true
+
+    - name: Install wget
+      ansible.builtin.apt:
+        name: "wget"
+        state: latest
+        update_cache: true
+
+    - name: Install gpg
+      ansible.builtin.apt:
+        name: "gpg"
+        state: latest
+        update_cache: true
+
+    - name: Add Apt signing key
+      ansible.builtin.shell: |
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+        install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+        echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list
+        rm -f packages.microsoft.gpg
+
+    - name: Install vscode
+      ansible.builtin.apt:
+        name: "code"
+        state: latest
+        update_cache: true
