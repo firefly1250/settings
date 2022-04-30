@@ -1,0 +1,12 @@
+- hosts: localhost
+  become: true
+  roles:
+  - geerlingguy.docker
+
+  tasks:
+    - name: Add user to group
+      ansible.builtin.shell: |
+        sudo groupadd docker
+        sudo gpasswd -a $USER docker
+        sudo systemctl restart docker
+      become: false

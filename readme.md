@@ -11,3 +11,9 @@ sudo apt install ansible
 ```
 ansible-playbook install-*.yaml --ask-become-pass
 ```
+
+## install docker
+```
+ansible-galaxy install geerlingguy.docker
+ansible-playbook install-docker.yaml --ask-become-pass
+```
