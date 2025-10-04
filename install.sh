@@ -7,6 +7,13 @@ install_base() {
 	sudo apt install -y curl gpg lsb-release ca-certificates
 }
 
+install_bottles() {
+	echo "Installing Bottles via Flatpak..."
+	sudo apt install -y flatpak
+	sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+	flatpak install -y flathub com.usebottles.bottles
+}
+
 install_docker() {
 	if ! command -v docker &>/dev/null; then
 		echo "Installing Docker..."
@@ -97,6 +104,7 @@ show_help() {
 	echo "  cli-tools  : Install modern CLI tools (fd-find, eza, ripgrep)"
 	echo "  node       : Install fnm and latest stable Node.js"
 	echo "  gemini     : Install Google Gemini CLI"
+	echo "  bottles    : Install Bottles via Flatpak"
 	echo "  all        : Install all tools"
 	exit 1
 }
@@ -134,6 +142,10 @@ for arg in "$@"; do
 	gemini)
 		install_base
 		install_gemini
+		;;
+	bottles)
+		install_base
+		install_bottles
 		;;
 	all)
 		install_base
