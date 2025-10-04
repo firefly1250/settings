@@ -62,6 +62,32 @@ install_cli_tools() {
 	sudo snap install bottom
 }
 
+install_node() {
+	if ! command -v fnm &>/dev/null; then
+		echo "Installing fnm (Fast Node Manager)..."
+		curl -fsSL https://fnm.vercel.app/install | bash
+		# Source fnm
+		export PATH="/home/$USER/.local/share/fnm:$PATH"
+		eval "$(fnm env --use-on-cd)"
+	else
+		echo "fnm already installed."
+	fi
+
+	echo "Installing latest stable Node.js..."
+	fnm install --lts
+	fnm use lts-latest
+}
+
+install_gemini() {
+	if ! command -v node &>/dev/null; then
+		echo "Node.js is required for Gemini CLI. Installing Node.js first..."
+		install_node
+	fi
+
+	echo "Installing Gemini CLI..."
+	npm install -g @google/gemini-cli@latest
+}
+
 show_help() {
 	echo "Usage: $0 [docker] [vscode] [brave] [discord] [cli-tools] [all]"
 	echo "  docker     : Install Docker"
@@ -69,6 +95,8 @@ show_help() {
 	echo "  brave      : Install Brave Browser"
 	echo "  discord    : Install Discord"
 	echo "  cli-tools  : Install modern CLI tools (fd-find, eza, ripgrep)"
+	echo "  node       : Install fnm and latest stable Node.js"
+	echo "  gemini     : Install Google Gemini CLI"
 	echo "  all        : Install all tools"
 	exit 1
 }
@@ -99,6 +127,14 @@ for arg in "$@"; do
 		install_base
 		install_cli_tools
 		;;
+	node)
+		install_base
+		install_node
+		;;
+	gemini)
+		install_base
+		install_gemini
+		;;
 	all)
 		install_base
 		install_docker
@@ -106,6 +142,8 @@ for arg in "$@"; do
 		install_brave
 		install_discord
 		install_cli_tools
+		install_node
+		install_gemini
 		;;
 	*)
 		echo "Unknown option: $arg"
