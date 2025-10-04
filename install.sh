@@ -55,13 +55,21 @@ install_discord() {
 	fi
 }
 
+install_cli_tools() {
+	sudo apt install eza fd-find ripgrep
+	sudo snap install zellij --classic
+	sudo snap install yazi --classic
+	sudo snap install bottom
+}
+
 show_help() {
-	echo "Usage: $0 [docker] [vscode] [brave] [discord] [all]"
-	echo "  docker  : Install Docker"
-	echo "  vscode  : Install VS Code"
-	echo "  brave   : Install Brave Browser"
-	echo "  discord : Install Discord"
-	echo "  all     : Install all tools"
+	echo "Usage: $0 [docker] [vscode] [brave] [discord] [cli-tools] [all]"
+	echo "  docker     : Install Docker"
+	echo "  vscode     : Install VS Code"
+	echo "  brave      : Install Brave Browser"
+	echo "  discord    : Install Discord"
+	echo "  cli-tools  : Install modern CLI tools (fd-find, eza, ripgrep)"
+	echo "  all        : Install all tools"
 	exit 1
 }
 
@@ -87,12 +95,17 @@ for arg in "$@"; do
 		install_base
 		install_discord
 		;;
+	cli-tools)
+		install_base
+		install_cli_tools
+		;;
 	all)
 		install_base
 		install_docker
 		install_vscode
 		install_brave
 		install_discord
+		install_cli_tools
 		;;
 	*)
 		echo "Unknown option: $arg"
