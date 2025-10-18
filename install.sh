@@ -67,6 +67,8 @@ install_cli_tools() {
 	sudo snap install zellij --classic
 	sudo snap install yazi --classic
 	sudo snap install bottom
+	# Install micro editor via snap
+	sudo snap install micro --classic
 }
 
 install_node() {
