@@ -53,6 +53,18 @@ install_brave() {
 	fi
 }
 
+install_chrome() {
+	if ! command -v google-chrome &>/dev/null; then
+		echo "Installing Google Chrome..."
+		curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg >/dev/null
+		echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list >/dev/null
+		sudo apt update
+		sudo apt install -y google-chrome-stable
+	else
+		echo "Google Chrome already installed."
+	fi
+}
+
 install_discord() {
 	if ! command -v discord &>/dev/null; then
 		echo "Installing Discord..."
@@ -97,16 +109,31 @@ install_gemini() {
 	npm install -g @google/gemini-cli@latest
 }
 
+install_antigravity() {
+	if ! command -v antigravity &>/dev/null; then
+		echo "Installing Antigravity (apt repository)..."
+		curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/antigravity-repo-key.gpg >/dev/null
+		echo "deb [signed-by=/usr/share/keyrings/antigravity-repo-key.gpg] \
+		https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | sudo tee /etc/apt/sources.list.d/antigravity.list >/dev/null
+		sudo apt update
+		sudo apt install -y antigravity
+	else
+		echo "Antigravity already installed."
+	fi
+}
+
 show_help() {
-	echo "Usage: $0 [docker] [vscode] [brave] [discord] [cli-tools] [all]"
+	echo "Usage: $0 [docker] [vscode] [brave] [discord] [cli-tools] [node] [gemini] [bottles] [antigravity] [all]"
 	echo "  docker     : Install Docker"
 	echo "  vscode     : Install VS Code"
 	echo "  brave      : Install Brave Browser"
+	echo "  chrome     : Install Google Chrome"
 	echo "  discord    : Install Discord"
 	echo "  cli-tools  : Install modern CLI tools (fd-find, eza, ripgrep)"
 	echo "  node       : Install fnm and latest stable Node.js"
 	echo "  gemini     : Install Google Gemini CLI"
 	echo "  bottles    : Install Bottles via Flatpak"
+	echo "  antigravity: Install Antigravity (Google official apt repo)"
 	echo "  all        : Install all tools"
 	exit 1
 }
@@ -129,6 +156,10 @@ for arg in "$@"; do
 		install_base
 		install_brave
 		;;
+	chrome)
+		install_base
+		install_chrome
+		;;
 	discord)
 		install_base
 		install_discord
@@ -149,15 +180,21 @@ for arg in "$@"; do
 		install_base
 		install_bottles
 		;;
+	antigravity)
+		install_base
+		install_antigravity
+		;;
 	all)
 		install_base
 		install_docker
 		install_vscode
 		install_brave
+		install_chrome
 		install_discord
 		install_cli_tools
 		install_node
 		install_gemini
+		install_antigravity
 		;;
 	*)
 		echo "Unknown option: $arg"
